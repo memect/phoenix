@@ -1,0 +1,14 @@
+.*
+!.gitignore
+!.gitkeep
+!.gitmodules
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+.pytest_cache/
+.mypy_cache/
+.cache/
+.DS_Store
+Thumbs.db

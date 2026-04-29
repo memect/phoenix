@@ -1,0 +1,2169 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "LLM提取器API",
+        "description": "用于LLM提取应用的API服务",
+        "version": "0.1.0"
+    },
+    "paths": {
+        "/api/documents": {
+            "get": {
+                "tags": [
+                    "文档管理"
+                ],
+                "summary": "Get Documents",
+                "description": "获取所有已上传文档的列表",
+                "operationId": "get_documents_api_documents_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse_List_Document__"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "文档管理"
+                ],
+                "summary": "Upload Documents",
+                "description": "上传一个或多个新文档",
+                "operationId": "upload_documents_api_documents_post",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_upload_documents_api_documents_post"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse_List_Document__"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/documents/{doc_id}": {
+            "delete": {
+                "tags": [
+                    "文档管理"
+                ],
+                "summary": "Delete Document",
+                "description": "删除指定的文档",
+                "operationId": "delete_document_api_documents__doc_id__delete",
+                "parameters": [
+                    {
+                        "name": "doc_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Doc Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "文档管理"
+                ],
+                "summary": "Get Document By Id",
+                "description": "获取指定文档的二进制数据。",
+                "operationId": "get_document_by_id_api_documents__doc_id__get",
+                "parameters": [
+                    {
+                        "name": "doc_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Doc Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/standard-sets": {
+            "get": {
+                "tags": [
+                    "标准集管理"
+                ],
+                "summary": "Get Standard Sets",
+                "description": "获取所有标准集列表",
+                "operationId": "get_standard_sets_api_standard_sets_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse_List_StandardSet__"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "标准集管理"
+                ],
+                "summary": "Create Standard Set",
+                "description": "创建一个新的标准集",
+                "operationId": "create_standard_set_api_standard_sets_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StandardSetCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse_StandardSet_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/standard-sets/csv-upload": {
+            "post": {
+                "tags": [
+                    "标准集管理"
+                ],
+                "summary": "Upload Csv To Standard Set",
+                "description": "上传CSV文件到标准集（可以是现有标准集或新建标准集）\n\n参数:\n- file: CSV文件\n- standard_set_id: 现有标准集ID（可选）\n- standard_set_name: 新标准集名称（可选，仅在创建新标准集时使用）\n- data_type: 数据类型，支持\"object\"和\"array\"两种格式\n- skip_duplicates: 是否跳过已存在的文档\n\n注意: standard_set_id 和 standard_set_name 必须至少提供一个",
+                "operationId": "upload_csv_to_standard_set_api_standard_sets_csv_upload_post",
+                "parameters": [
+                    {
+                        "name": "standard_set_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "现有标准集ID",
+                            "title": "Standard Set Id"
+                        },
+                        "description": "现有标准集ID"
+                    },
+                    {
+                        "name": "standard_set_name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "新标准集名称",
+                            "title": "Standard Set Name"
+                        },
+                        "description": "新标准集名称"
+                    },
+                    {
+                        "name": "data_type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "description": "数据类型: object(字典) 或 array(列表)",
+                            "default": "object",
+                            "title": "Data Type"
+                        },
+                        "description": "数据类型: object(字典) 或 array(列表)"
+                    },
+                    {
+                        "name": "skip_duplicates",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "description": "是否跳过已存在的文档",
+                            "default": false,
+                            "title": "Skip Duplicates"
+                        },
+                        "description": "是否跳过已存在的文档"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_upload_csv_to_standard_set_api_standard_sets_csv_upload_post"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse_CSVUploadResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/standard-sets/{set_id}/export": {
+            "get": {
+                "tags": [
+                    "标准集管理"
+                ],
+                "summary": "Export Standard Set",
+                "description": "导出指定标准集，供用户线下编辑",
+                "operationId": "export_standard_set_api_standard_sets__set_id__export_get",
+                "parameters": [
+                    {
+                        "name": "set_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Set Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/standard-sets/{set_id}/import": {
+            "post": {
+                "tags": [
+                    "标准集管理"
+                ],
+                "summary": "Import Standard Set",
+                "description": "导入用户修改后的标准集Excel文件，更新标准集内容",
+                "operationId": "import_standard_set_api_standard_sets__set_id__import_post",
+                "parameters": [
+                    {
+                        "name": "set_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Set Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_import_standard_set_api_standard_sets__set_id__import_post"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/standard-sets/{set_id}": {
+            "delete": {
+                "tags": [
+                    "标准集管理"
+                ],
+                "summary": "Delete Standard Set",
+                "description": "删除指定的标准集",
+                "operationId": "delete_standard_set_api_standard_sets__set_id__delete",
+                "parameters": [
+                    {
+                        "name": "set_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Set Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "标准集管理"
+                ],
+                "summary": "Get Standard Set Detail",
+                "description": "获取标准集详细信息，包括关联的文档信息",
+                "operationId": "get_standard_set_detail_api_standard_sets__set_id__get",
+                "parameters": [
+                    {
+                        "name": "set_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Set Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse_StandardSet_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/whole-standard-sets": {
+            "post": {
+                "tags": [
+                    "标准集管理"
+                ],
+                "summary": "Whole Create Standard Set",
+                "description": "创建一个完整的标准集：下载PDF -> 上传文档 -> 创建/更新标准集 -> 关联文档和标准数据",
+                "operationId": "whole_create_standard_set_api_whole_standard_sets_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WholeStandardSetCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse_WholeStandardSetResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/standard-sets/{standard_set_id}/documents": {
+            "post": {
+                "tags": [
+                    "标准集文档管理"
+                ],
+                "summary": "Add Document To Standard Set",
+                "description": "向标准集添加文档",
+                "operationId": "add_document_to_standard_set_api_standard_sets__standard_set_id__documents_post",
+                "parameters": [
+                    {
+                        "name": "standard_set_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Standard Set Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StandardSetDocumentAdd"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse_StandardSetDocument_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "标准集文档管理"
+                ],
+                "summary": "Get Standard Sets Get",
+                "description": "获取指定标准集的文档条目列表\n\nArgs:\n    standard_set_id: 标准集ID\n    max_count: 随机选择的数量，如果大于0则返回随机选择的指定数量的标准集条目",
+                "operationId": "get_standard_sets_get_api_standard_sets__standard_set_id__documents_get",
+                "parameters": [
+                    {
+                        "name": "standard_set_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Standard Set Id"
+                        }
+                    },
+                    {
+                        "name": "max_count",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "title": "Max Count"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/standard-sets/{standard_set_id}/documents/{document_id}": {
+            "post": {
+                "tags": [
+                    "标准集文档管理"
+                ],
+                "summary": "Add Document To Standard Set By Ids",
+                "description": "通过文档ID和标准集ID向标准集添加文档",
+                "operationId": "add_document_to_standard_set_by_ids_api_standard_sets__standard_set_id__documents__document_id__post",
+                "parameters": [
+                    {
+                        "name": "standard_set_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Standard Set Id"
+                        }
+                    },
+                    {
+                        "name": "document_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Document Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StandardSetDocumentUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse_StandardSetDocument_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "标准集文档管理"
+                ],
+                "summary": "Update Document In Standard Set By Ids",
+                "description": "通过文档ID和标准集ID更新标准集中的文档",
+                "operationId": "update_document_in_standard_set_by_ids_api_standard_sets__standard_set_id__documents__document_id__put",
+                "parameters": [
+                    {
+                        "name": "standard_set_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Standard Set Id"
+                        }
+                    },
+                    {
+                        "name": "document_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Document Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StandardSetDocumentUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse_StandardSetDocument_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "标准集文档管理"
+                ],
+                "summary": "Remove Document From Standard Set",
+                "description": "从标准集中移除指定的文档条目",
+                "operationId": "remove_document_from_standard_set_api_standard_sets__standard_set_id__documents__document_id__delete",
+                "parameters": [
+                    {
+                        "name": "standard_set_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Standard Set Id"
+                        }
+                    },
+                    {
+                        "name": "document_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Document Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "标准集文档管理"
+                ],
+                "summary": "Get Standard Set Document By Ids",
+                "description": "通过标准集ID和文档ID获取标准集文档条目\n\nArgs:\n    standard_set_id: 标准集ID\n    document_id: 文档ID",
+                "operationId": "get_standard_set_document_by_ids_api_standard_sets__standard_set_id__documents__document_id__get",
+                "parameters": [
+                    {
+                        "name": "standard_set_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Standard Set Id"
+                        }
+                    },
+                    {
+                        "name": "document_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Document Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse_StandardSetDocument_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/dev-api/set-bucket-public": {
+            "post": {
+                "tags": [
+                    "文档信息管理"
+                ],
+                "summary": "Set Bucket Public",
+                "description": "将存储桶设置为公开读权限",
+                "operationId": "set_bucket_public_dev_api_set_bucket_public_post",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse_bool_"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/dev-api/documents_info/{standard_set_id}": {
+            "get": {
+                "tags": [
+                    "文档信息管理"
+                ],
+                "summary": "Get Document Info By Id",
+                "description": "获取指定文档的二进制数据。\n\nArgs:\n    standard_set_id: 标准集ID\n    with_md: 是否包含MD内容\n    public_links: 是否使用公开链接（需要存储桶设置为公开读权限）",
+                "operationId": "get_document_info_by_id_dev_api_documents_info__standard_set_id__get",
+                "parameters": [
+                    {
+                        "name": "standard_set_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Standard Set Id"
+                        }
+                    },
+                    {
+                        "name": "with_md",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "default": true,
+                            "title": "With Md"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse_List_DocumentInfo__"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "文档信息管理"
+                ],
+                "summary": "Post Document Info By Id",
+                "description": "根据条件获取文档信息，支持添加标签、排除指定文档ID和获取指定数量的标准集条目\n\nArgs:\n    standard_set_id: 标准集ID\n    request: 请求体，包含max_count、exclude_document_ids和tags\n    with_md: 是否包含MD内容\n    public_links: 是否使用公开链接（需要存储桶设置为公开读权限）",
+                "operationId": "post_document_info_by_id_dev_api_documents_info__standard_set_id__post",
+                "parameters": [
+                    {
+                        "name": "standard_set_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Standard Set Id"
+                        }
+                    },
+                    {
+                        "name": "with_md",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "default": true,
+                            "title": "With Md"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DocumentInfoPostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse_List_DocumentInfo__"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "summary": "Root",
+                "operationId": "root__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponse_str_"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ApiResponse": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "default": "200"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "成功"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {},
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data"
+                    }
+                },
+                "type": "object",
+                "title": "ApiResponse",
+                "description": "API 响应信封模型"
+            },
+            "ApiResponse_CSVUploadResponse_": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "default": "200"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "成功"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/CSVUploadResponse"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "title": "ApiResponse[CSVUploadResponse]"
+            },
+            "ApiResponse_List_DocumentInfo__": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "default": "200"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "成功"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "$ref": "#/components/schemas/DocumentInfo"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data"
+                    }
+                },
+                "type": "object",
+                "title": "ApiResponse[List[DocumentInfo]]"
+            },
+            "ApiResponse_List_Document__": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "default": "200"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "成功"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "$ref": "#/components/schemas/Document"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data"
+                    }
+                },
+                "type": "object",
+                "title": "ApiResponse[List[Document]]"
+            },
+            "ApiResponse_List_StandardSet__": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "default": "200"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "成功"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "$ref": "#/components/schemas/StandardSet"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data"
+                    }
+                },
+                "type": "object",
+                "title": "ApiResponse[List[StandardSet]]"
+            },
+            "ApiResponse_StandardSetDocument_": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "default": "200"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "成功"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/StandardSetDocument"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "title": "ApiResponse[StandardSetDocument]"
+            },
+            "ApiResponse_StandardSet_": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "default": "200"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "成功"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/StandardSet"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "title": "ApiResponse[StandardSet]"
+            },
+            "ApiResponse_WholeStandardSetResponse_": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "default": "200"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "成功"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/WholeStandardSetResponse"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "title": "ApiResponse[WholeStandardSetResponse]"
+            },
+            "ApiResponse_bool_": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "default": "200"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "成功"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data"
+                    }
+                },
+                "type": "object",
+                "title": "ApiResponse[bool]"
+            },
+            "ApiResponse_str_": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "default": "200"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "成功"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data"
+                    }
+                },
+                "type": "object",
+                "title": "ApiResponse[str]"
+            },
+            "Body_import_standard_set_api_standard_sets__set_id__import_post": {
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "title": "File"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "file"
+                ],
+                "title": "Body_import_standard_set_api_standard_sets__set_id__import_post"
+            },
+            "Body_upload_csv_to_standard_set_api_standard_sets_csv_upload_post": {
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "title": "File"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "file"
+                ],
+                "title": "Body_upload_csv_to_standard_set_api_standard_sets_csv_upload_post"
+            },
+            "Body_upload_documents_api_documents_post": {
+                "properties": {
+                    "files": {
+                        "items": {
+                            "type": "string",
+                            "format": "binary"
+                        },
+                        "type": "array",
+                        "title": "Files"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "files"
+                ],
+                "title": "Body_upload_documents_api_documents_post"
+            },
+            "CSVUploadResponse": {
+                "properties": {
+                    "standard_set_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Standard Set Id"
+                    },
+                    "processed_rows": {
+                        "type": "integer",
+                        "title": "Processed Rows"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "standard_set_id",
+                    "processed_rows",
+                    "message"
+                ],
+                "title": "CSVUploadResponse",
+                "description": "CSV上传响应模型"
+            },
+            "Document": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Id"
+                    },
+                    "upload_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Upload At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name",
+                    "id",
+                    "upload_at"
+                ],
+                "title": "Document",
+                "description": "文档响应模型"
+            },
+            "DocumentData": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "url": {
+                        "type": "string",
+                        "title": "Url"
+                    },
+                    "docjson_url": {
+                        "type": "string",
+                        "title": "Docjson Url"
+                    },
+                    "standard_data": {
+                        "title": "Standard Data"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name",
+                    "url",
+                    "docjson_url",
+                    "standard_data"
+                ],
+                "title": "DocumentData"
+            },
+            "DocumentDownloadResult": {
+                "properties": {
+                    "idx": {
+                        "type": "integer",
+                        "title": "Idx"
+                    },
+                    "url": {
+                        "type": "string",
+                        "title": "Url"
+                    },
+                    "document_id": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Document Id"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "title": "Success"
+                    },
+                    "error": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Error"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "idx",
+                    "url",
+                    "success"
+                ],
+                "title": "DocumentDownloadResult",
+                "description": "文档下载结果"
+            },
+            "DocumentInfo": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Id"
+                    },
+                    "document_id": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Document Id"
+                    },
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    },
+                    "original_filename": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Original Filename"
+                    },
+                    "source": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Source"
+                    },
+                    "storage_path": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Storage Path"
+                    },
+                    "content_storage_path": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Content Storage Path"
+                    },
+                    "status": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Status"
+                    },
+                    "created_at": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Updated At"
+                    },
+                    "md_content": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Md Content"
+                    },
+                    "pdf_link": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Pdf Link"
+                    },
+                    "docjson_link": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Docjson Link"
+                    },
+                    "md_link": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Md Link"
+                    },
+                    "standard_data": {
+                        "anyOf": [
+                            {},
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Standard Data"
+                    },
+                    "standard_set_id": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Standard Set Id"
+                    },
+                    "meta": {
+                        "anyOf": [
+                            {
+                                "additionalProperties": true,
+                                "type": "object"
+                            },
+                            {
+                                "items": {},
+                                "type": "array"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Meta"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "original_filename",
+                    "source",
+                    "storage_path",
+                    "content_storage_path",
+                    "status",
+                    "created_at",
+                    "updated_at",
+                    "md_content"
+                ],
+                "title": "DocumentInfo",
+                "description": "文档信息模型"
+            },
+            "DocumentInfoPostRequest": {
+                "properties": {
+                    "max_count": {
+                        "type": "integer",
+                        "title": "Max Count",
+                        "description": "随机选择的数量，如果大于0则返回随机选择的指定数量的标准集条目",
+                        "default": 0
+                    },
+                    "exclude_document_ids": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Exclude Document Ids",
+                        "description": "要排除的文档ID列表"
+                    },
+                    "tags": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Tags",
+                        "description": "要添加的标签列表"
+                    }
+                },
+                "type": "object",
+                "title": "DocumentInfoPostRequest",
+                "description": "文档信息POST请求模型"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "StandardSet": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Id"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/StandardSetStatus"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "document_ids": {
+                        "items": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "type": "array",
+                        "title": "Document Ids",
+                        "default": []
+                    },
+                    "schema_def": {
+                        "anyOf": [
+                            {
+                                "additionalProperties": true,
+                                "type": "object"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Schema Def"
+                    },
+                    "tags": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Tags"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name",
+                    "id",
+                    "status",
+                    "created_at"
+                ],
+                "title": "StandardSet",
+                "description": "标准集响应模型"
+            },
+            "StandardSetCreate": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "document_ids": {
+                        "items": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "type": "array",
+                        "title": "Document Ids",
+                        "description": "文档ID列表",
+                        "example": [
+                            "a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8"
+                        ]
+                    },
+                    "schema": {
+                        "anyOf": [
+                            {
+                                "additionalProperties": true,
+                                "type": "object"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Schema"
+                    },
+                    "tags": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Tags"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name",
+                    "document_ids"
+                ],
+                "title": "StandardSetCreate",
+                "description": "创建标准集请求模型"
+            },
+            "StandardSetDocument": {
+                "properties": {
+                    "standard_set_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Standard Set Id"
+                    },
+                    "document_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Document Id"
+                    },
+                    "standard_data": {
+                        "anyOf": [
+                            {
+                                "additionalProperties": true,
+                                "type": "object"
+                            },
+                            {
+                                "items": {},
+                                "type": "array"
+                            }
+                        ],
+                        "title": "Standard Data"
+                    },
+                    "tags": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Tags"
+                    },
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Id"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "standard_set_id",
+                    "document_id",
+                    "standard_data",
+                    "id",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "StandardSetDocument",
+                "description": "标准集文档条目响应模型"
+            },
+            "StandardSetDocumentAdd": {
+                "properties": {
+                    "document_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Document Id"
+                    },
+                    "standard_data": {
+                        "anyOf": [
+                            {
+                                "additionalProperties": true,
+                                "type": "object"
+                            },
+                            {
+                                "items": {},
+                                "type": "array"
+                            }
+                        ],
+                        "title": "Standard Data",
+                        "default": {}
+                    },
+                    "tags": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Tags"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "document_id"
+                ],
+                "title": "StandardSetDocumentAdd",
+                "description": "向标准集添加文档的请求模型（简化版，仅包含必要字段）"
+            },
+            "StandardSetDocumentUpdate": {
+                "properties": {
+                    "standard_data": {
+                        "anyOf": [
+                            {
+                                "additionalProperties": true,
+                                "type": "object"
+                            },
+                            {
+                                "items": {},
+                                "type": "array"
+                            }
+                        ],
+                        "title": "Standard Data"
+                    },
+                    "tags": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Tags"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "standard_data"
+                ],
+                "title": "StandardSetDocumentUpdate",
+                "description": "更新标准集文档条目的请求模型"
+            },
+            "StandardSetStatus": {
+                "type": "string",
+                "enum": [
+                    "generating",
+                    "ready",
+                    "failed"
+                ],
+                "title": "StandardSetStatus",
+                "description": "标准集状态枚举"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            },
+            "WholeStandardSetCreate": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "document_data": {
+                        "items": {
+                            "$ref": "#/components/schemas/DocumentData"
+                        },
+                        "type": "array",
+                        "title": "Document Data",
+                        "description": "文档ID列表",
+                        "example": [
+                            "a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8"
+                        ]
+                    },
+                    "schema": {
+                        "anyOf": [
+                            {
+                                "additionalProperties": true,
+                                "type": "object"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Schema"
+                    },
+                    "standardset_id": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Standardset Id"
+                    },
+                    "tags": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Tags"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name",
+                    "document_data"
+                ],
+                "title": "WholeStandardSetCreate",
+                "description": "创建标准集请求模型"
+            },
+            "WholeStandardSetResponse": {
+                "properties": {
+                    "standard_set": {
+                        "$ref": "#/components/schemas/StandardSet"
+                    },
+                    "download_results": {
+                        "items": {
+                            "$ref": "#/components/schemas/DocumentDownloadResult"
+                        },
+                        "type": "array",
+                        "title": "Download Results"
+                    },
+                    "total_requested": {
+                        "type": "integer",
+                        "title": "Total Requested"
+                    },
+                    "success_count": {
+                        "type": "integer",
+                        "title": "Success Count"
+                    },
+                    "failed_count": {
+                        "type": "integer",
+                        "title": "Failed Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "standard_set",
+                    "download_results",
+                    "total_requested",
+                    "success_count",
+                    "failed_count"
+                ],
+                "title": "WholeStandardSetResponse",
+                "description": "完整标准集创建响应模型"
+            }
+        }
+    }
+}

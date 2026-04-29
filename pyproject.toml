@@ -1,0 +1,85 @@
+[project]
+name = "extract-agent"
+version = "0.4.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.3.1",
+    "pydantic>=2.11.7",
+    "pydantic-settings>=2.0.0",
+    "langgraph>=0.2.0",
+    "langchain[google-genai]>=0.3.0",
+    "litellm>=1.74.8",
+    "langchain-openai>=0.3.28",
+    'scipy>=1.16.1',
+    "aiofiles>=24.1.0",
+    "types-aiofiles>=24.1.0.20250809",
+    "jambo>=0.1.3.post2",
+    "requests>=2.32.4",
+    "typer>=0.20.0",
+    "click>=8.0.0",
+    "httpx>=0.27.0",
+    # --- memect ---
+    "docjson2x",
+    # ---
+    "agentscope>=1.0.12",
+    "pytest>=9.0.1",
+    # --- code quality tools for agent ---
+    "tree-sitter>=0.24.0",
+    "tree-sitter-python>=0.23.0",
+    "ruff>=0.8.0",
+    "mypy>=1.0.0",
+    "pytest-cov>=4.0.0",
+    "diskcache>=5.6.3",
+    "pymupdf>=1.24.0",
+    "pdf-ai-explorer>=0.1.1",
+]
+
+
+[project.scripts]
+tree-sitter-cli = "tree_sitter_cli:app"
+xdev = "xdev.cli:cli"
+xdev-config = "xdev.config_cli:cli"
+agentic-extract = "agentic_extract.cli:cli"
+pdf-ai-explorer = "pdf_ai_explorer.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "src/evaluator",
+    "src/evaluation_engine",
+    "src/code_executor",
+    "src/langchain_llm",
+    "src/memect_apiserver",
+    "src/extract_agent",
+    "src/extract_agent_common",
+    "src/xdev",
+    "src/agentic_extract",
+    "src/tree_sitter_cli.py"
+]
+
+# [[tool.uv.index]]
+# url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+# default = true
+
+[[tool.uv.index]]
+url = "http://mirrors.aliyun.com/pypi/simple/"
+default = true
+
+[tool.uv.sources]
+docjson2x = { path = "./packages/docjson2x-0.1.1-py3-none-any.whl" }
+pdf-ai-explorer = { path = "./packages/pdf_ai_explorer-0.1.1-py3-none-any.whl" }
+
+[tool.pytest.ini_options]
+pythonpath=["src"]
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.0.0",
+    "pytest>=9.0.1",
+    "pytest-asyncio>=1.3.0",
+]

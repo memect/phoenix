@@ -1,0 +1,59 @@
+{
+  "code": "200",
+  "message": "标准集创建成功",
+  "data": {
+    "standard_set": {
+      "name": "test-copy",
+      "id": "158c99e6-00fa-4e53-b172-26ae42d4b403",
+      "status": "generating",
+      "created_at": "2026-01-13T04:01:35.805213Z",
+      "document_ids": [
+        "d433a2a6-c484-8778-b513-6092a64aac64",
+        "d652a4a2-b4a3-0f95-85a7-d9a7c90565f3",
+        "78d83334-1c01-a77a-d086-54bbcaa2f321",
+        "cdbec384-8014-15ab-7dbc-523577f236ca",
+        "b6ac4fe1-d0e7-1651-3fd4-b9e481e30096",
+        "292c7825-5788-3bd6-5942-2e41dfed4e37",
+        "6228a5c5-a1f8-6ba2-a8d7-cad8cd260ce6",
+        "babfed89-f586-a511-2d55-3eda478e09ad",
+        "10536c50-7ace-56a3-80ca-fc30906d496f",
+        "c7ed7cd9-b8a8-ab4e-f27b-355b188f03e3",
+        "bc5c4ee9-5336-a2c6-d85c-624edc4312db",
+        "ce163ecb-52d0-969d-74cf-081b70340901",
+        "fa271fb8-fcb8-7ce3-e9f6-3d6026b787e4",
+        "2493e512-b76a-1cec-c728-3a4ea2b22f9f",
+        "cbfbd7ff-0d71-e15e-0798-96bc5c019067",
+        "86def91e-51fb-5e0e-552d-358d064149b0",
+        "30d80317-60d4-ba5f-2740-cb54539bf8e9",
+        "81b87516-fb53-68bb-212e-677afcdebbe3",
+        "da7fdc05-bea6-fa74-d6fa-80b48d14536a",
+        "6982ebe5-824c-29a8-7385-1e1dafa18ecd",
+        "aa2cc5df-ebb0-eea5-5dad-1bdf02db9764",
+        "aec7c04e-4ea9-5765-c9dc-e1aa7343fb97",
+        "b480eab9-cc67-1ab8-41ed-0adc806fb02d",
+        "8d8c68ff-e20a-0f1e-7b12-a74c488781d8"
+      ],
+      "schema_def": null,
+      "tags": null
+    },
+    "download_results": [
+      {
+        "idx": 0,
+        "url": "http://localhost:9100/llm-extract-app/documents/6982ebe5/6982ebe5824c29a873851e1dafa18ecd/doc.pdf",
+        "document_id": "b480eab9-cc67-1ab8-41ed-0adc806fb02d",
+        "success": true,
+        "error": null
+      },
+      {
+        "idx": 1,
+        "url": "http://localhost:9100/llm-extract-app/documents/aa2cc5df/aa2cc5dfebb0eea55dad1bdf02db9764/doc.pdf",
+        "document_id": "8d8c68ff-e20a-0f1e-7b12-a74c488781d8",
+        "success": true,
+        "error": null
+      }
+    ],
+    "total_requested": 2,
+    "success_count": 2,
+    "failed_count": 0
+  }
+}

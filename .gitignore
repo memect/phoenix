@@ -1,0 +1,37 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+local/
+resources/
+*.egg-info
+
+# Virtual environments
+.venv
+.env
+/*.env
+.DS_Store
+.agentic-extract.json
+
+*.bak
+IMPLEMENTATION_PLAN.md
+create_sse_workspaces.py
+list_files.txt
+test_debug.py
+
+/__chat2ai
+
+*.db
+
+node_modules
+
+src/extract_hub/api/uploads
+docker/simple_workflow/postgres_data
+docker/extract_hub/*.env
+.*
+!.gitignore
+
+/facts
+/logs
