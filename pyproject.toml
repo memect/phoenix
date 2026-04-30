@@ -1,6 +1,6 @@
 [project]
 name = "extract-agent"
-version = "0.4.0"
+version = "0.4.1"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -21,7 +21,7 @@ dependencies = [
     "click>=8.0.0",
     "httpx>=0.27.0",
     # --- memect ---
-    "docjson2x",
+    "memect-pdfjson2x",
     # ---
     "agentscope>=1.0.12",
     "pytest>=9.0.1",
@@ -71,7 +71,7 @@ url = "http://mirrors.aliyun.com/pypi/simple/"
 default = true
 
 [tool.uv.sources]
-docjson2x = { path = "./packages/docjson2x-0.1.1-py3-none-any.whl" }
+memect-pdfjson2x = { path = "./packages/docjson2x-0.1.1-py3-none-any.whl" }
 pdf-ai-explorer = { path = "./packages/pdf_ai_explorer-0.1.1-py3-none-any.whl" }
 
 [tool.pytest.ini_options]
