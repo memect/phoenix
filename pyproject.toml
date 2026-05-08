@@ -1,9 +1,23 @@
 [project]
 name = "extract-agent"
 version = "0.4.1"
-description = "Add your description here"
+description = "Phoenix: an agentic extraction workflow for iterative document information extraction"
 readme = "README.md"
 requires-python = ">=3.12"
+license = "PolyForm-Noncommercial-1.0.0"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Memect" },
+]
+keywords = ["agent", "document-extraction", "pdf", "docjson", "xdev"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing",
+]
 dependencies = [
     "numpy>=2.3.1",
     "pydantic>=2.11.7",
@@ -21,7 +35,7 @@ dependencies = [
     "click>=8.0.0",
     "httpx>=0.27.0",
     # --- memect ---
-    "memect-pdfjson2x",
+    "docjson2x",
     # ---
     "agentscope>=1.0.12",
     "pytest>=9.0.1",
@@ -35,6 +49,12 @@ dependencies = [
     "pymupdf>=1.24.0",
     "pdf-ai-explorer>=0.1.1",
 ]
+
+[project.urls]
+Homepage = "https://github.com/memect/phoenix"
+Repository = "https://github.com/memect/phoenix"
+Issues = "https://github.com/memect/phoenix/issues"
+Changelog = "https://github.com/memect/phoenix/blob/main/docs/CHANGELOG.md"
 
 
 [project.scripts]
@@ -71,7 +91,7 @@ url = "http://mirrors.aliyun.com/pypi/simple/"
 default = true
 
 [tool.uv.sources]
-memect-pdfjson2x = { path = "./packages/docjson2x-0.1.1-py3-none-any.whl" }
+docjson2x = { path = "./packages/docjson2x-0.1.1-py3-none-any.whl" }
 pdf-ai-explorer = { path = "./packages/pdf_ai_explorer-0.1.1-py3-none-any.whl" }
 
 [tool.pytest.ini_options]
