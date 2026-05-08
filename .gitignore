@@ -28,10 +28,11 @@ test_debug.py
 node_modules
 
 src/extract_hub/api/uploads
-docker/simple_workflow/postgres_data
-docker/extract_hub/*.env
 .*
 !.gitignore
+!.gitattributes
+!.github/
+!.python-version
 
 /facts
 /logs
