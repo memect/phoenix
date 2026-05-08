@@ -17,13 +17,6 @@ Phoenix 是面向文档结构化提取任务的自动迭代 Agent 工具链。
 - 评估反馈：`xdev evaluate` 对提取结果和 labels 做对比
 - 迭代记忆：`.agent_state` 保存每轮决策、事件流、评估快照和 Agent 会话状态
 
-安装后主要命令：
-
-```bash
-agentic-extract --help
-xdev --help
-xdev-config --help
-```
 
 ## 安装
 
@@ -35,21 +28,7 @@ xdev-config --help
 curl -fsSL https://raw.githubusercontent.com/memect/phoenix/main/scripts/install.sh | bash
 ```
 
-脚本会安装 `extract-agent`，并配置独立的 `ppx` 环境用于本地 PDF 解析。安装完成后重启 shell，或按脚本提示执行：
-
-```bash
-source ~/.zshrc
-# 或
-source ~/.bashrc
-```
-
-如果已经有 `uv`，也可以只安装 Phoenix CLI：
-
-```bash
-uv tool install extract-agent
-```
-
-这种方式只安装 Phoenix，不会自动准备 `ppx`。如果需要从 PDF 导入数据，请确保本机已有可用的 `ppx` 命令。
+> 脚本会用 uv tool install 安装 extract-agent，并把 ppx 安装到独立虚拟环境后写入 PATH。
 
 ## 源代码方式
 
