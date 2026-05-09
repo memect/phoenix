@@ -36,3 +36,4 @@ src/extract_hub/api/uploads
 
 /facts
 /logs
+output/

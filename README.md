@@ -239,6 +239,16 @@ agentic-extract run --workspace ws --reset
 
 这会清理运行状态和日志，不会删除 `.xdev` 数据目录。
 
+## Agent Skills
+
+Phoenix 提供官方 Agent Skill，让 Claude Code 等 AI 编程助手理解完整使用流程：安装配置、`agentic-extract` 自动迭代、`xdev` 查看效果。
+
+安装（需要 Node.js）：
+
+```bash
+npx skills add memect/phoenix -g --skill phoenix -y
+```
+
 ## 相关链接
 
 - [更新日志](docs/CHANGELOG.md)
