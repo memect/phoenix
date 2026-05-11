@@ -30,9 +30,10 @@ The normal user path is:
 1. Install Phoenix.
 2. Configure models with `xdev-config`.
 3. Put PDFs in a directory.
-4. Run `agentic-extract auto` with a natural-language extraction request.
-5. Use `xdev` to inspect one document or evaluate the workspace.
-6. Feed result problems back into `agentic-extract run`.
+4. **Check for scene reuse** — before running `agentic-extract auto`, scan existing workspaces for a similar document type and field set. If found, copy `program.py` and use `agentic-extract run` instead.
+5. Run `agentic-extract auto` with a natural-language extraction request (only if no reusable scene exists).
+6. Use `xdev` to inspect one document or evaluate the workspace.
+7. Feed result problems back into `agentic-extract run`.
 
 ## Quick Start
 
@@ -109,6 +110,7 @@ Read `references/install-and-config.md` when installing, configuring models, cho
 
 ## References
 
+- Read `references/scene-reuse.md` before starting any new extraction task — check for reusable scenes first.
 - Read `references/install-and-config.md` for install, `xdev-config`, model roles, and provider prefixes.
 - Read `references/run-and-iterate.md` for `agentic-extract auto/run`, budgets, and feedback loops.
 - Read `references/progress-output.md` when waiting for long runs or reporting progress.
