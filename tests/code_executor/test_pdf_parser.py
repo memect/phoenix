@@ -101,6 +101,57 @@ def test_parse_pdf_files_uses_temp_input_directory(tmp_path, monkeypatch):
     assert input_dirs[0] != tmp_path
 
 
+def test_parse_pdf_dir_falls_back_to_individual_files(tmp_path, monkeypatch):
+    pdf_dir = tmp_path / "pdfs"
+    pdf_dir.mkdir()
+    (pdf_dir / "a.pdf").write_bytes(b"%PDF-1.4")
+    (pdf_dir / "b.pdf").write_bytes(b"%PDF-1.4")
+    commands = []
+
+    def fake_run(command, **kwargs):
+        commands.append(command)
+        input_path = Path(command[2])
+        output_dir = Path(command[command.index("--out-dir") + 1])
+        if input_path.is_dir():
+            return subprocess.CompletedProcess(command, 1, stdout="", stderr="batch bad")
+        _write_docjson(output_dir / "doc.json", input_path.stem)
+        return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+
+    result = parse_pdf_dir_to_docjsons(pdf_dir, workers=1)
+
+    assert result == {"a": {"text": "a"}, "b": {"text": "b"}}
+    assert Path(commands[0][2]) == pdf_dir
+    assert [Path(command[2]).name for command in commands[1:]] == ["a.pdf", "b.pdf"]
+
+
+def test_parse_pdf_file_retries_formula_no_for_formula_failure(tmp_path, monkeypatch):
+    pdf_path = tmp_path / "a.pdf"
+    pdf_path.write_bytes(b"%PDF-1.4")
+    commands = []
+
+    def fake_run(command, **kwargs):
+        commands.append(command)
+        output_dir = Path(command[command.index("--out-dir") + 1])
+        if "--formula" not in command:
+            return subprocess.CompletedProcess(
+                command,
+                1,
+                stdout="",
+                stderr="rapid_latex_ocr image resizer meets error",
+            )
+        _write_docjson(output_dir / "doc.json", "formula-off")
+        return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+
+    result = parse_pdf_file_to_docjson(str(pdf_path))
+
+    assert result == {"text": "formula-off"}
+    assert commands[1][-2:] == ["--formula", "no"]
+
+
 def test_parse_pdf_file_reports_missing_ppx(tmp_path, monkeypatch):
     pdf_path = tmp_path / "a.pdf"
     pdf_path.write_bytes(b"%PDF-1.4")

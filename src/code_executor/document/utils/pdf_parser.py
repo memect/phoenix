@@ -37,6 +37,11 @@ DEFAULT_API_PARAMS = {
     "merge-table": "true",
 }
 
+# ppx parse timeout is disabled by default.
+# To restore timeout control, re-enable the default timeout, the timeout=
+# argument in _run_ppx_parse, the TimeoutExpired handler, and the helper.
+# DEFAULT_PPX_PARSE_TIMEOUT_SEC = 1800
+
 
 def parse_pdf_to_docjson_via_api(
     pdf_data: bytes,
@@ -140,7 +145,17 @@ def parse_pdf_file_to_docjson(
 
     with TemporaryDirectory(prefix="xdev-ppx-parse-") as tmp_dir:
         output_dir = Path(tmp_dir)
-        _run_ppx_parse(pdf_path, output_dir, ppx_command=ppx_command)
+        try:
+            _run_ppx_parse(pdf_path, output_dir, ppx_command=ppx_command)
+        except ParseError as first_error:
+            if not _should_retry_without_formula(first_error):
+                raise
+            _run_ppx_parse(
+                pdf_path,
+                output_dir,
+                ppx_command=ppx_command,
+                extra_args=["--formula", "no"],
+            )
         return _load_ppx_docjson(output_dir / "doc.json")
 
 
@@ -167,15 +182,22 @@ def parse_pdf_dir_to_docjsons(
     if not pdf_files:
         raise ValueError(f"PDF 目录为空: {pdf_dir_path}")
 
-    with TemporaryDirectory(prefix="xdev-ppx-parse-") as tmp_dir:
-        output_dir = Path(tmp_dir)
-        _run_ppx_parse(
-            pdf_dir_path,
-            output_dir,
+    try:
+        with TemporaryDirectory(prefix="xdev-ppx-parse-") as tmp_dir:
+            output_dir = Path(tmp_dir)
+            _run_ppx_parse(
+                pdf_dir_path,
+                output_dir,
+                ppx_command=ppx_command,
+                workers=workers,
+            )
+            return _load_ppx_dir_docjsons(output_dir, pdf_files)
+    except ParseError as batch_error:
+        return _parse_pdf_files_individually(
+            pdf_files,
             ppx_command=ppx_command,
-            workers=workers,
+            batch_error=batch_error,
         )
-        return _load_ppx_dir_docjsons(output_dir, pdf_files)
 
 
 def parse_pdf_files_to_docjsons(
@@ -214,11 +236,14 @@ def _run_ppx_parse(
     *,
     ppx_command: str,
     workers: int | None = None,
+    extra_args: Sequence[str] | None = None,
 ) -> None:
     command = [ppx_command, "parse", str(input_path)]
     if workers is not None:
         command.extend(["--workers", str(_map_ppx_workers(workers))])
     command.extend(["--out-dir", str(output_dir)])
+    if extra_args:
+        command.extend(extra_args)
 
     try:
         result = subprocess.run(
@@ -226,6 +251,8 @@ def _run_ppx_parse(
             capture_output=True,
             text=True,
             check=False,
+            # ppx parse currently has no timeout by default.
+            # timeout=_ppx_parse_timeout_sec(),
         )
     except FileNotFoundError as exc:
         raise ParseError(
@@ -248,8 +275,58 @@ def _run_ppx_parse(
         raise ParseError(message, command=command)
 
 
+def _parse_pdf_files_individually(
+    pdf_files: Sequence[Path],
+    *,
+    ppx_command: str,
+    batch_error: ParseError | None = None,
+) -> dict[str, dict[str, Any]]:
+    results: dict[str, dict[str, Any]] = {}
+    failures: list[ParseError] = []
+
+    for pdf_file in pdf_files:
+        try:
+            results[pdf_file.stem] = parse_pdf_file_to_docjson(
+                str(pdf_file),
+                ppx_command=ppx_command,
+            )
+        except ParseError as exc:
+            failures.append(exc)
+
+    if failures:
+        parts: list[str] = []
+        if batch_error is not None:
+            parts.append(f"batch ppx parse failed: {batch_error}")
+        parts.extend(str(failure) for failure in failures)
+        raise ParseError("\n\n".join(parts), command=failures[-1].command)
+
+    return results
+
+
+def _should_retry_without_formula(error: ParseError) -> bool:
+    text = str(error)
+    return (
+        "formula" in text.lower()
+        or "latex" in text.lower()
+        or "rapid_latex_ocr" in text
+        or "image resizer meets error" in text
+        or "only 0-dimensional arrays can be converted to Python scalars" in text
+    )
+
+
 def _map_ppx_workers(workers: int) -> int:
     return 0 if workers <= 1 else workers
+
+
+# def _ppx_parse_timeout_sec() -> int:
+#     raw = os.environ.get("XDEV_PPX_PARSE_TIMEOUT_SEC", "").strip()
+#     if not raw:
+#         return DEFAULT_PPX_PARSE_TIMEOUT_SEC
+#     try:
+#         timeout = int(raw)
+#     except ValueError:
+#         return DEFAULT_PPX_PARSE_TIMEOUT_SEC
+#     return timeout if timeout > 0 else DEFAULT_PPX_PARSE_TIMEOUT_SEC
 
 
 def _load_ppx_docjson(path: Path) -> dict[str, Any]:
